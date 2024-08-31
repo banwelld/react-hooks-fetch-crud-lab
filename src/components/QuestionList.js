@@ -16,18 +16,18 @@ function QuestionList() {
     fetch(`http://localhost:4000/questions/${questionId}`, {
       method: 'DELETE'
     })
-     .then(() => getQuestions());
+     .then(() => setQuestions(questions.filter(q => q.id !== questionId)));
   }
 
   const updateQuestion = (questionObj) => {
-    console.log(questionObj);
+    const updateOneKeyValue = q => q.id === questionObj.id ? { ...q, correctIndex: questionObj.newAnswer } : q;
     fetch(`http://localhost:4000/questions/${questionObj.id}`, {
       method: 'PATCH',
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ correctIndex: questionObj.newAnswer})
     })
       .then(r => r.json())
-      .then(r => getQuestions());
+      .then(() => setQuestions(questions.map(updateOneKeyValue)));
   };
 
   const onDeleteClick = questionId => deleteQuestion(questionId);
